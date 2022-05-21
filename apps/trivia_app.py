@@ -1,5 +1,6 @@
 import typing
 import requests
+import random
 
 POINTS = 'points'
 ANSWER = 'answer'
@@ -9,6 +10,7 @@ RESULTS = 'results'
 CORRECT = 'correct_answer'
 INCORRECT = 'incorrect_answers'
 DIFFICULTY = 'difficulty'
+CHOICES = 'choices'
 
 
 class TriviaApp:
@@ -22,7 +24,22 @@ class TriviaApp:
         r = requests.get(f'https://opentdb.com/api.php?amount={no_questions}&difficulty=easy&type=multiple')
         if r.status_code != 200:
             print('[TRIVIA APP] Failed getting questions')
-        return r.json()[RESULTS]
+        body = r.json()[RESULTS]
+        questions = []
+        for data in body:
+            correct = data[CORRECT]
+            choices = [correct] + data[INCORRECT]
+            random.shuffle(choices)
+            question = {
+                QUESTION: data[QUESTION],
+                CATEGORY: data[CATEGORY],
+                DIFFICULTY: data[DIFFICULTY],
+                CHOICES: choices.copy(),
+                CORRECT: choices.index(correct)
+            }
+            questions.append(question.copy())
+
+        return questions
 
     def get_difficulty(self):
         return self.questions[self.current_q][DIFFICULTY]
@@ -33,9 +50,11 @@ class TriviaApp:
     def get_question(self):
         return self.questions[self.current_q][QUESTION]
 
-    # todo: randomise
     def get_choices(self):
-        return [self.questions[self.current_q][CORRECT]] + self.questions[self.current_q][INCORRECT]
+        return self.questions[self.current_q][CHOICES]
+
+    def get_correct(self):
+        return self.questions[self.current_q][CORRECT]
 
     def get_participants(self):
         return self.scoreboard.keys()
@@ -49,10 +68,11 @@ class TriviaApp:
     def get_points(self, user):
         return self.scoreboard[user][POINTS]
 
-    def add_answer(self, user, answer):
+    def add_answer(self, user, answer: int):
         if self.scoreboard[user][ANSWER]:
             return False
         self.scoreboard[user][ANSWER] = answer
+        return True
 
     def get_answer(self, user):
         return self.scoreboard[user][ANSWER]

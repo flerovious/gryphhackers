@@ -31,12 +31,12 @@ class TestTriviaApp(unittest.TestCase):
                 self.assertEqual(points, 0)
 
     def test_answer(self):
-        for user in self.users:
+        for index, user in enumerate(self.users):
             self.app.add_participant(user)
             self.assertIsNone(self.app.get_answer(user))
 
-            self.app.add_answer(user, user)
-            self.assertEqual(self.app.get_answer(user), user)
+            self.app.add_answer(user, index)
+            self.assertEqual(self.app.get_answer(user), index)
 
     def test_points(self):
         for user in self.users:
@@ -48,14 +48,20 @@ class TestTriviaApp(unittest.TestCase):
 
     def test_verify(self):
         self.assertFalse(self.app.has_ended())
+
+        correct_user = self.users[0]
+        correct_answer = self.app.get_correct()
         for index, user in enumerate(self.users):
             self.app.add_participant(user)
-            self.app.add_answer(user, self.app.get_choices()[index])
+            if user == correct_user:
+                self.app.add_answer(user, correct_answer)
+            else:
+                self.app.add_answer(user, correct_answer + 1)
 
         self.app.verify()
         for user in self.users:
             points = self.app.get_points(user)
-            if user == self.users[0]:
+            if user == correct_user:
                 self.assertEqual(points, 1)
             else:
                 self.assertEqual(points, 0)
