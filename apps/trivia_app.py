@@ -1,6 +1,6 @@
-import typing
 import requests
 import random
+import html
 
 POINTS = 'points'
 ANSWER = 'answer'
@@ -27,14 +27,14 @@ class TriviaApp:
         body = r.json()[RESULTS]
         questions = []
         for data in body:
-            correct = data[CORRECT]
+            correct = html.unescape(data[CORRECT])
             choices = [correct] + data[INCORRECT]
             random.shuffle(choices)
             question = {
-                QUESTION: data[QUESTION],
-                CATEGORY: data[CATEGORY],
-                DIFFICULTY: data[DIFFICULTY],
-                CHOICES: choices.copy(),
+                QUESTION: html.unescape(data[QUESTION]),
+                CATEGORY: html.unescape(data[CATEGORY]),
+                DIFFICULTY: html.unescape(data[DIFFICULTY]),
+                CHOICES: [html.unescape(choice) for choice in choices],
                 CORRECT: choices.index(correct)
             }
             questions.append(question.copy())

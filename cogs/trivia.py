@@ -61,7 +61,7 @@ class Trivia(commands.Cog):
             answer_dict[choice] = answer_list[count]
 
         # Embed design
-        em = discord.Embed(title="Trivia Question \u2753", description=f"{html.unescape(question)}", color=colour)
+        em = discord.Embed(title="Trivia Question \u2753", description=question, color=colour)
         em.add_field(name=f"Category", value=f"{category}", inline=False)
         em.add_field(name="Difficulty", value=f"{difficulty.capitalize()}", inline=False)
         em.add_field(name="A", value=f"{answer_dict['A']}", inline=True)
