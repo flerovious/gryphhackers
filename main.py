@@ -21,5 +21,6 @@ async def on_message(message):
     if message.content.startswith('$hello'):
         await message.channel.send('Hello!')
 
+# Would you rather game
 
 client.run(TOKEN)
