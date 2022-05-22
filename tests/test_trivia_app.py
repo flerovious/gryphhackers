@@ -4,7 +4,7 @@ from apps.trivia_app import TriviaApp, Difficulty
 
 class TestTriviaApp(unittest.TestCase):
     def setUp(self) -> None:
-        self.users = ["user 1", "user 2"]
+        self.users = tuple(range(4))
         self.app = TriviaApp(1, Difficulty.EASY)
 
     def tearDown(self) -> None:

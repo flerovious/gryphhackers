@@ -105,7 +105,7 @@ class TriviaApp:
     def has_ended(self):
         return self.current_q >= len(self.questions)
 
-    def add_participant(self, user: str) -> None:
+    def add_participant(self, user: int) -> None:
         self.scoreboard[user] = {
             POINTS: 0,
             ANSWER: None
