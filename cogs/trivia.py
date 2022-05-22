@@ -15,6 +15,12 @@ class GameState(Enum):
     ENDED = 3
 
 
+# Function to create embed text
+def embed_text(text, header="Trivia Bot", colour=discord.Color.blue()):
+    em = discord.Embed(title=header, description=text, color=colour)
+    return em
+
+
 class Trivia(commands.Cog):
     def __init__(self, client: commands.Bot):
         self.client = client
@@ -38,32 +44,37 @@ class Trivia(commands.Cog):
                 self.channel = ctx.channel
                 self.state = GameState.START
                 self.game_start.start()
-                await ctx.send(f'Trivia starting in <add countdown>')
+                await ctx.send(
+                    embed=embed_text(f'Trivia starting in <add countdown>'))
                 return
             if round(time.time()) < self.start_time:
-                await ctx.send(f'Trivia already in progress. Join now with <add join sub command>')
+                await ctx.send(embed=embed_text(f'Trivia already in progress. Join now with "!trivia join"'))
                 return
-            await ctx.send(f'Trivia has already started, please wait for the next round')
+            await ctx.send(embed=embed_text(f'Trivia has already started, please wait for the next round'))
         elif "join" in args:
             if round(time.time()) < self.start_time:
                 if ctx.message.author.id in self.app.get_participants():
-                    await ctx.send(f"You're already in Trivia")
+                    await ctx.send(embed=embed_text(f"You're already in Trivia"))
                     return
                 self.app.add_participant(ctx.message.author.id)
-                await ctx.send(f'You have joined the Trivia')
+                await ctx.send(embed=embed_text(f'You have joined the Trivia'))
                 return
-            await ctx.send(f'Trivia has already started, please wait for the next round')
+            await ctx.send(embed=embed_text(f'Trivia has already started, please wait for the next round'))
         elif "end" in args:
             if self.start_time:
                 self.game_end()
-                await ctx.send(f'{ctx.message.author.mention} has ended Trivia')
+                await ctx.send(embed=embed_text(f'{ctx.message.author.mention} has ended Trivia'))
                 return
-            await ctx.send(f'TriviaApp has not been started')
+            await ctx.send(embed=embed_text(f'Trivia Bot has not been started'))
         elif not args:
-            await ctx.send(f'Help message')
+            ms = discord.Embed(title="Help", color=discord.Color.blue())
+            ms.add_field(name=f"To start a game", value=f"Start with '!trivia start.'", inline=False)
+            ms.add_field(name="To join the game", value=f"Join with '!trivia join.'", inline=False)
+            ms.add_field(name="To end the game", value=f"End with '!trivia end.'", inline=False)
+            await ctx.send(embed=ms)
         else:
             # should use to log errors
-            await ctx.send(f'Trivia fallthrough reached. ctx = {ctx}')
+            await ctx.send(embed=embed_text(f'Trivia fallthrough reached. ctx = {ctx}', header='Log'))
 
     def game_end(self):
         if self.start_time:
@@ -110,18 +121,6 @@ class Trivia(commands.Cog):
             self.game_end()
             # send message to all that game has ended
 
-        # data = get_question()
-        # # Assigns variables
-        # category, correct_answer, difficulty, incorrect_answers, question, qn_type = data['category'], data[
-        #     'correct_answer'], data['difficulty'], data['incorrect_answers'], data['question'], data['type']
-        #
-        # # Sets colour of embed based on difficulty
-        # if difficulty == 'easy':
-        #     colour = 0x2eff00  # green
-        # elif difficulty == 'medium':
-        #     colour = 0xdc7633  # orange
-        # else:
-        #     colour = 0xff0000  # red
         # # Sets colour of embed sidebar based on difficulty
         # def set_difficulty_colour(difficulty):
         #     if difficulty == 'easy':
@@ -131,9 +130,8 @@ class Trivia(commands.Cog):
         #     else:
         #         return 0xff0000  # red
         #
-        # # TODO -- HOW TO SET
         # number_qn = 1
-        # difficulty_choice = Difficulty('easy')
+        # difficulty_choice = Difficulty.EASY
         #
         # # Creates instance of trivia and assigns variables for embed
         # trivia_inst = TriviaApp(no_questions=number_qn, difficulty=difficulty_choice)
