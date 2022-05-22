@@ -109,7 +109,7 @@ class TriviaApp:
     def has_all_answered(self):
         return all([user[ANSWER] for user in self.scoreboard.values()])
 
-    def add_participant(self, user: int) -> None:
+    def add_participant(self, user) -> None:
         self.scoreboard[user] = {
             POINTS: 0,
             ANSWER: None

@@ -59,8 +59,8 @@ class TestTriviaApp(unittest.TestCase):
                 self.app.add_answer(user, correct_answer + 1)
 
         self.app.verify()
-        for user in self.users:
-            points = self.app.get_points(user)
+        ranking = self.app.get_rankings()
+        for user, points in ranking:
             if user == correct_user:
                 self.assertEqual(points, 1)
             else:
