@@ -70,7 +70,7 @@ class TriviaApp:
         return self.scoreboard.keys()
 
     def get_rankings(self):
-        return [(user, data[POINTS]) for user, data in self.scoreboard.items()]
+        return sorted([(user, data[POINTS]) for user, data in self.scoreboard.items()], key=lambda x: x[1], reverse=True)
 
     def add_points(self, user, points):
         self.scoreboard[user][POINTS] += points
@@ -101,13 +101,13 @@ class TriviaApp:
                     correct_users.append(user)
                 self.clear_answer(user)
             self.current_q += 1
-            return [(user, user in correct_users) for user in self.scoreboard.keys()]
+            return {user: user in correct_users for user in self.scoreboard.keys()}
 
     def has_ended(self):
         return self.current_q >= len(self.questions)
 
     def has_all_answered(self):
-        return all([user[ANSWER] for user in self.scoreboard.values()])
+        return all([user[ANSWER] is not None for user in self.scoreboard.values()])
 
     def add_participant(self, user) -> None:
         self.scoreboard[user] = {
