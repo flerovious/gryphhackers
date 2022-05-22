@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 #TOKEN = os.getenv('TOKEN')
-token = 'OTc3NTYzOTMyODUwMDEyMjIx.G3932j.Zh89XDyAqw8zNSCFYhP_8FgESXKB45rXxX86ZE'
+token = 'OTc3NTUyODc5NzkzNjAyNTgw.GTEOxr.G7cxfCRwvXfASb3vuBlHX9RtGWYaY1_cFutGZE'
 
 client = commands.Bot(command_prefix='.')
 

@@ -20,7 +20,13 @@ class WUR(commands.Cog):
         response = requests.get('https://would-you-rather-api.abaanshanid.repl.co')
         json_data = json.loads(response.text)
         question = json_data['data']
-        await ctx.send(f'{question}')
+        lightbulb_emoji = '\uD83D\uDCA1'
+        embed_qn = discord.Embed(
+            title = f'{lightbulb_emoji} {question}',
+            color = discord.Color.blue()
+        )
+        await ctx.send(embed=embed_qn)
+        # await ctx.send(f'{question}')
 
 
 def setup(client):
