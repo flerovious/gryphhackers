@@ -1,3 +1,4 @@
+from enum import Enum
 import requests
 import random
 import html
@@ -13,15 +14,25 @@ DIFFICULTY = 'difficulty'
 CHOICES = 'choices'
 
 
+class Difficulty(str, Enum):
+    EASY = 'easy',
+    MEDIUM = 'medium',
+    HARD = 'hard',
+
+
 class TriviaApp:
-    def __init__(self):
+    def __init__(self, no_questions: int, difficulty: Difficulty):
         self.scoreboard = {}
-        self.questions = TriviaApp.fetch_questions(1)
+        self.questions = TriviaApp.fetch_questions(no_questions, difficulty)
         self.current_q = 0
 
     @staticmethod
-    def fetch_questions(no_questions):
-        r = requests.get(f'https://opentdb.com/api.php?amount={no_questions}&difficulty=easy&type=multiple')
+    def fetch_questions(no_questions, difficulty):
+        url = f'https://opentdb.com/api.php' \
+              f'?amount={no_questions}' \
+              f'&difficulty={difficulty.value}' \
+              f'&type=multiple'
+        r = requests.get(url)
         if r.status_code != 200:
             print('[TRIVIA APP] Failed getting questions')
         body = r.json()[RESULTS]
@@ -38,7 +49,6 @@ class TriviaApp:
                 CORRECT: choices.index(correct)
             }
             questions.append(question.copy())
-
         return questions
 
     def get_difficulty(self):

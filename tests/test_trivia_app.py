@@ -1,11 +1,11 @@
 import unittest
-from apps.trivia_app import TriviaApp
+from apps.trivia_app import TriviaApp, Difficulty
 
 
 class TestTriviaApp(unittest.TestCase):
     def setUp(self) -> None:
         self.users = ["user 1", "user 2"]
-        self.app = TriviaApp()
+        self.app = TriviaApp(1, Difficulty.EASY)
 
     def tearDown(self) -> None:
         self.app = None
