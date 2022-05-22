@@ -3,10 +3,13 @@ import os
 import random 
 # from dotenv import load_dotenv
 from discord.ext import commands
+import json
+from urllib import response
+import requests
 
 # load_dotenv()
 # TOKEN = os.getenv('TOKEN')
-
+token = 'OTc3NTYzOTMyODUwMDEyMjIx.G3932j.Zh89XDyAqw8zNSCFYhP_8FgESXKB45rXxX86ZE'
 bot = commands.Bot(command_prefix="!")
 
 # bot comes online
@@ -26,16 +29,12 @@ async def on_message(message):
     await bot.process_commands(message)
 
 # Would you rather game
-
 @bot.command()
 async def wur_game(ctx):
     print('Game in session')
-    would_you_rather_qns = ['Would you rather have more time or more money?',  
-    'Would you rather have a rewind button or a pause button on your life?',
-    'Would you rather go to a movie or to dinner alone?', 'Would you rather go deep-sea diving or bungee jumping?',
-    'Would you rather be too busy or be bored?', 'Would you rather live where it is constantly winter or where it is constantly summer?',
-    'Would you rather have many good friends or one very best friend?'
-    ]
-    await ctx.send(f'{random.choice(would_you_rather_qns)}')
+    response = requests.get('https://would-you-rather-api.abaanshanid.repl.co')
+    json_data = json.loads(response.text)
+    question = json_data['data']
+    await ctx.send(question)
 
-bot.run('TOKEN')
+bot.run(token)
